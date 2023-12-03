@@ -4,11 +4,27 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
+	"unicode"
 )
 
 func processLine(line string) int {
-	// return dummy data to test, will add logic later
-	return 77
+	var firstNum, lastNum int = 0, 0
+	for _, char := range line {
+		if unicode.IsDigit(char) {
+			numericValue, err := strconv.Atoi(string(char))
+			if err != nil {
+				fmt.Println("Error converting string to int: ", err)
+				return 0
+			}
+			if firstNum == 0 {
+				firstNum = numericValue
+			}
+			lastNum = numericValue
+		}
+	}
+	fmt.Println("Line: ", line, "First: ", firstNum, "Last: ", lastNum)
+	return firstNum*10 + lastNum
 }
 
 func main() {
@@ -20,7 +36,7 @@ func main() {
 
 	// handle error
 	if err != nil {
-		fmt.Println("Error oprning file: ", err)
+		fmt.Println("Error opening file: ", err)
 		return
 	}
 
@@ -36,9 +52,7 @@ func main() {
 	for lineReader.Scan() {
 
 		line := lineReader.Text()
-
 		var calibrationValue int = processLine(line)
-
 		totalSum += calibrationValue
 	}
 
